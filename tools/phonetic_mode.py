@@ -82,10 +82,12 @@ def align(us, uk):
     return pairs[::-1]
 
 
-def spell_vowel(us, uk, final):
+def spell_vowel(us, uk, final, before_r=False):
     """Spelling for an American vowel unit, given the British one it lines up with."""
     base, stress = us
     ukb = uk[0] if is_vowel(uk) else None
+    if base == "AA" and before_r and ukb is None:
+        return "aa"                                  # no British form: aren't, like car
     if base == "AH" and stress == 0:
         return "a"                                   # schwa: about, the
     if base == "IY" and stress == 0 and final:
@@ -121,7 +123,8 @@ def spell(us_phones, uk_phones):
         if is_vowel(a):
             final = k == last_vowel and all(not is_vowel(p[0]) and p[0] is None
                                             for p in pairs[k + 1:])
-            out.append(spell_vowel(a, b, final))
+            nxt = next((p[0] for p in pairs[k + 1:] if p[0] is not None), None)
+            out.append(spell_vowel(a, b, final, before_r=nxt is not None and nxt[0] == "R"))
         else:
             out.append(CONSONANTS[a[0]])
     return "".join(out)
@@ -150,6 +153,38 @@ KEY = [
 ]
 
 
+# British spellings missing from CMUdict, matched to their American form for
+# the pronunciation: offence -> offense, colour -> color, centre -> center.
+US_VARIANTS = [("our", "or"), ("ence", "ense"), ("tre", "ter"), ("isation", "ization"),
+               ("ise", "ize"), ("ised", "ized"), ("ising", "izing"), ("yse", "yze"),
+               ("ogue", "og"), ("lled", "led"), ("lling", "ling"), ("ae", "e"), ("oe", "e")]
+
+
+def american_form(word, us):
+    """The American spelling of a British-spelled word, if CMUdict has it."""
+    for gb, am in US_VARIANTS:
+        i = word.rfind(gb)
+        if i >= 0:
+            alt = word[:i] + am + word[i + len(gb):]
+            if alt in us:
+                return alt
+    return None
+
+
+def contraction_uk(word, us, uk):
+    """British pronunciation of a contraction, from its base word: the British
+    dictionary has "what" and "are" but not "what's" and "aren't"."""
+    head = word.split("'")[0]
+    # n't contractions: the base is the word before the n (aren't -> are)
+    bases = [word[:-3], head] if word.endswith("n't") else [head]
+    for base in bases:
+        if base in uk and base in us:
+            full, stem = us[word][0], us[base][0]
+            if full[:len(stem)] == stem:
+                return uk[base][0] + full[len(stem):]
+    return None
+
+
 def is_abbreviation(word, prons):
     """CMUdict lists abbreviations under their spoken form (st = "street",
     mr = "mister", fbi = "eff bee eye"). Spot them so they're left alone:
@@ -167,35 +202,61 @@ def main():
     ap.add_argument("uk")
     ap.add_argument("--top", type=int, default=50000)
     ap.add_argument("--json")
+    ap.add_argument("--wordlist", default="/usr/share/dict/words",
+                    help="dictionary of real words, to cover words the frequency list misses")
     a = ap.parse_args()
 
     us, uk = load_cmudict(a.cmudict), load_ipa_uk(a.uk)
     ranked = [w for w, _ in load_freq(a.freq) if w.isalpha() and w.isascii()]
     # single letters are letter names ("t" = "tee"), except the words a and I
     words = [w for w in ranked if w in us and (len(w) > 1 or w in ("a", "i"))][:a.top]
+    # The frequency list comes from film subtitles, so it misses many written
+    # words (learners, browsers). Also cover every word that's in both CMUdict
+    # and a real-word list (the British dictionary or the system dictionary);
+    # that leaves out most of CMUdict's names.
+    with open(a.wordlist) as f:
+        real = {w.strip() for w in f if w.strip().islower()}
+    seen = set(words)
+    words += sorted(w for w in us if w not in seen and w.isalpha() and w.isascii()
+                    and len(w) > 1 and (w in uk or w in real))
     words = [w for w in words
              if not is_abbreviation(w, spelling_levels.pronunciations(w, us, uk))]
     # Contractions aren't in the word list but CMUdict has them (can't, I'm).
-    # The British dictionary doesn't, so these use the American pronunciation.
     common = set(ranked[:5000])
     words += [w for w in us if "'" in w and w.split("'")[0] in common
               and w.split("'", 1)[1] in ("t", "s", "m", "re", "ve", "ll", "d")]
+    # British spellings CMUdict lacks (offence, colour), via the American form
+    british = {}
+    for w in ranked[:a.top]:
+        if w not in us:
+            am = american_form(w, us)
+            if am:
+                british[w] = am
+    words += sorted(british)
 
     def respell(w):
-        return spell(us[w][0], uk[w][0] if w in uk else None)
+        if w in british:
+            return spell(us[british[w]][0], uk[w][0] if w in uk else None)
+        uk_pron = uk[w][0] if w in uk else (contraction_uk(w, us, uk) if "'" in w else None)
+        return spell(us[w][0], uk_pron)
 
-    table = {}
+    table, same = {}, []
     for w in words:
         sp = respell(w)
         if sp != w:
             table[w] = sp
+        else:
+            same.append(w)
     key = [{"sound": s, "spelling": sp,
             "examples": ", ".join(f"{w} → {respell(w)}" for w in ex if w in us)}
            for s, sp, ex in KEY]
     print(f"{len(table)} of {len(words)} words change", file=sys.stderr)
     if a.json:
         with open(a.json, "w") as f:
-            json.dump({"key": key, "words": table}, f, separators=(",", ":"), ensure_ascii=False)
+            # "same": known words that don't change, so the extension doesn't try
+            # to build them from a shorter word (need is not nee + d)
+            json.dump({"key": key, "words": table, "same": sorted(same)}, f,
+                      separators=(",", ":"), ensure_ascii=False)
     for row in key:
         print(f"{row['sound']:12} {row['spelling']:5} {row['examples']}")
 

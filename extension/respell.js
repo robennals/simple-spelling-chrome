@@ -46,9 +46,51 @@
     return (lower) => spellingFor(table, lower, all, true);
   }
 
-  /** Lookup for "Fully phonetic". */
+  /**
+   * Lookup for "Fully phonetic". A word not in the table but built from one
+   * that is (exhales from exhale) is respelled from that word plus the ending,
+   * written by sound: ekshayl -> ekshaylz. Known words that don't change
+   * ("same") are never rebuilt this way.
+   */
   function phoneticLookup(table) {
-    return (lower) => (Object.hasOwn(table.words, lower) ? table.words[lower] : null);
+    const same = new Set(table.same || []);
+    const direct = (w) => (Object.hasOwn(table.words, w) ? table.words[w] : null);
+    return (lower) => {
+      const hit = direct(lower);
+      if (hit !== null || same.has(lower) || lower.includes("'")) return hit;
+      return inflected(lower, direct);
+    };
+  }
+
+  // Endings whose sound depends on the sound before them.
+  const HISSING = /(s|z|sh|ch|j|zh)$/;      // + iz: boxes, judges
+  const VOICELESS = /(p|t|k|f|th|s|sh|ch)$/; // + s / + t: cats, walked
+
+  /** Respell a word as base word + ending (-s, -es, -ed, -ing, -ly), or null. */
+  function inflected(lower, direct) {
+    const tries = [];
+    const undouble = (stem) => (stem.length > 2 && stem.at(-1) === stem.at(-2) ? stem.slice(0, -1) : null);
+    if (lower.endsWith("ies")) tries.push([lower.slice(0, -3) + "y", "s"]);
+    if (lower.endsWith("es")) tries.push([lower.slice(0, -2), "s"]);
+    if (lower.endsWith("s")) tries.push([lower.slice(0, -1), "s"]);
+    if (lower.endsWith("ied")) tries.push([lower.slice(0, -3) + "y", "d"]);
+    if (lower.endsWith("ed")) {
+      tries.push([lower.slice(0, -1), "d"], [lower.slice(0, -2), "d"], [undouble(lower.slice(0, -2)), "d"]);
+    }
+    if (lower.endsWith("ing")) {
+      const stem = lower.slice(0, -3);
+      tries.push([stem, "ing"], [stem + "e", "ing"], [undouble(stem), "ing"]);
+    }
+    if (lower.endsWith("ly")) tries.push([lower.slice(0, -2), "ly"]);
+    for (const [stem, ending] of tries) {
+      if (!stem || stem.length < 3) continue;
+      const sp = direct(stem);
+      if (sp === null) continue;
+      if (ending === "s") return sp + (HISSING.test(sp) ? "iz" : VOICELESS.test(sp) ? "s" : "z");
+      if (ending === "d") return sp + (/[td]$/.test(sp) ? "id" : VOICELESS.test(sp) ? "t" : "d");
+      return sp + ending;                    // -ing, -ly
+    }
+    return null;
   }
 
   /** Copy the capitalisation pattern of `original` onto `replacement`. */

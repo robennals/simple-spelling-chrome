@@ -87,11 +87,28 @@ written as it sounds, so *think* → *thingk*.
 - **Unstressed "uh"** is *a* (*abowt, tha*).
 - **Weak forms** (*to*, *the*, *a*) are written in their full form, so each
   word has one spelling.
-- **Contractions** use the American pronunciation, because the British
-  dictionary doesn't list them (*can't* → *kant*).
+- **Contractions** use the base word's British pronunciation plus the ending
+  (*aren't* → *aarant*, *what's* → *wots*). *can't* is *kant*, because the
+  British dictionary has *can* (*kan*) but not the *kahnt* of *can't*.
+- **Abbreviations are left alone** (*st, mr, dr, fbi, etc*): the dictionary
+  lists them under their spoken form.
+
+## Which words it covers
+
+- **Every real word in the pronunciation dictionary**: words in CMUdict that
+  are also in the British dictionary or the system word list. This leaves out
+  most of CMUdict's names. Also the 50,000 most common words in the
+  frequency list, and common contractions.
+- **British spellings** through their American form for the pronunciation
+  (*offence* → *afens*, *colour* → *kuler*).
+- **Word forms built while reading.** A word missing from the table that's
+  built from one in it is respelled from that word plus the ending, by sound:
+  *exhales* → *ekshaylz*, *exhaled* → *ekshayld*. Words known to stay the same
+  are listed separately so they're never rebuilt (*need* is not *nee* + *d*).
 
 ## Regenerating
 
 ```bash
 python3 tools/phonetic_mode.py cmudict.dict en_50k.txt en_UK.txt --json extension/phonetic.json
+# uses /usr/share/dict/words as the real-word list; override with --wordlist
 ```

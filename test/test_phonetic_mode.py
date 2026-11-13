@@ -47,6 +47,25 @@ class VowelSetTest(unittest.TestCase):
         self.assertEqual(spell("K AE1 N T"), "kant")
 
 
+class SpellingVariantTest(unittest.TestCase):
+    def test_american_form_of_british_spelling(self):
+        us = {"offense": [()], "color": [()], "center": [()]}
+        self.assertEqual(pm.american_form("offence", us), "offense")
+        self.assertEqual(pm.american_form("colour", us), "color")
+        self.assertEqual(pm.american_form("centre", us), "center")
+        self.assertIsNone(pm.american_form("hour", us))
+
+    def test_contraction_uses_base_word_british_pronunciation(self):
+        us = {"aren't": [("AA1", "R", "AH0", "N", "T")], "are": [("AA1", "R")],
+              "what's": [("W", "AH1", "T", "S")], "what": [("W", "AH1", "T")]}
+        uk = {"are": [("AAR1",)], "what": [("W", "AA1", "T")]}
+        self.assertEqual(pm.contraction_uk("aren't", us, uk), ("AAR1", "AH0", "N", "T"))
+        self.assertEqual(pm.contraction_uk("what's", us, uk), ("W", "AA1", "T", "S"))
+
+    def test_american_only_vowel_before_r(self):
+        self.assertEqual(spell("AA1 R AH0 N T"), "aarant")
+
+
 class AbbreviationTest(unittest.TestCase):
     def test_abbreviations_are_spotted(self):
         street = [("S", "T", "R", "IY")]

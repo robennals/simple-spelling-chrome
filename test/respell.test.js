@@ -64,10 +64,13 @@ test("contractions not in the table are respelled part by part", () => {
   assert.strictEqual(respellText("I couldn’t", SIMPLE, true), "I cudn’t");
 });
 
-test("words that are JavaScript property names are left alone", () => {
-  const s = "call the constructor or toString or hasOwnProperty";
+test("JavaScript property names never leak into the text", () => {
+  const s = "call toString or hasOwnProperty or valueOf";
   assert.strictEqual(respellText(s, SIMPLE, true), s);
-  assert.strictEqual(respellText(s, PHONETIC, true).split(" ")[2], "constructor");
+  assert.strictEqual(respellText(s, PHONETIC, true).split(" ").filter((w, i) => i % 2 === 1).join(" "),
+    "toString hasOwnProperty valueOf");
+  // "constructor" is a real word: it gets a real spelling, not Object's constructor
+  assert.match(respellText("constructor", PHONETIC, true), /^[a-z]+$/);
 });
 
 // --- Fully phonetic ------------------------------------------------------
@@ -99,4 +102,15 @@ test("abbreviations are left alone in both modes", () => {
   assert.strictEqual(respellText(s, SIMPLE, true), s);
   assert.strictEqual(respellText("st Paul, mr Smith, dr Jones, the fbi, etc.", PHONETIC, true),
     "st Paul, mr Smith, dr Jones, tha fbi, etc.");
+});
+
+test("fully phonetic builds word forms missing from the table from their base word", () => {
+  // exhales / exhaled / exhaling aren't in the table, but exhale is
+  assert.strictEqual(PHONETIC("exhales"), PHONETIC("exhale") + "z");
+  assert.strictEqual(PHONETIC("exhaled"), PHONETIC("exhale") + "d");
+  assert.strictEqual(PHONETIC("exhaling"), PHONETIC("exhale") + "ing");
+  // known unchanged words are never rebuilt from a shorter word
+  assert.strictEqual(PHONETIC("need"), null);
+  // unknown words with no known base stay unknown
+  assert.strictEqual(PHONETIC("blorfs"), null);
 });
