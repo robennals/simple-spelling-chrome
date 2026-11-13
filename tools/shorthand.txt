@@ -1,0 +1,112 @@
+# Familiar informal / simplified spellings. Format: word: alt alt ...
+# A respelling that lands on one of these gets partial credit in the optimiser
+# and is preferred when choosing between pronunciations.
+# Only phonetic shorthands (no digits, no abbreviations like "pls").
+you: u yu
+your: yor yer ur
+are: ar
+why: y
+though: tho
+although: altho
+through: thru
+throughout: thruout
+night: nite
+tonight: tonite
+light: lite
+right: rite
+bright: brite
+might: mite
+fight: fite
+tight: tite
+height: hite
+high: hi
+thanks: thanx
+because: cuz coz becuz becoz
+love: luv
+enough: enuf
+what: wot wut
+whatever: wotever
+was: woz wuz
+of: ov uv
+says: sez
+said: sed
+does: duz
+cool: kool
+quick: kwik
+please: pleez
+boys: boyz
+girls: girlz gurlz
+guys: guyz
+kids: kidz
+news: newz
+cheese: cheez
+friend: frend
+friends: frendz frends
+some: sum
+something: sumthing
+someone: sumwun
+nothing: nuthing
+phone: fone
+photo: foto
+tough: tuff
+rough: ruff
+laugh: laff
+cough: coff
+school: skool skul
+music: muzik
+business: bizness
+good: gud
+would: wud
+could: cud
+should: shud
+done: dun
+one: wun
+once: wunce
+easy: eezy ezy
+again: agen
+any: enny
+many: menny
+sure: shure shur
+doughnut: donut
+catalogue: catalog
+dialogue: dialog
+programme: program
+colour: color
+favourite: favorite
+neighbour: neighbor
+plough: plow
+cheque: check
+grey: gray
+women: wimmin wimmen
+busy: bizzy
+pretty: pritty
+money: munny
+honey: hunny
+sugar: shugar
+yeah: ya yah yea
+another: anuther
+mother: muther
+brother: bruther
+other: uther
+heart: hart
+heard: herd
+world: wurld
+work: wurk
+first: furst
+girl: gurl
+word: wurd
+new: nu noo
+knew: nu noo
+who: hoo
+do: doo
+true: tru
+blue: blu
+view: vu
+foreign: forin
+island: iland
+listen: lissen
+often: offen
+every: evry
+everything: evrything
+everyone: evrywun
+different: diffrent

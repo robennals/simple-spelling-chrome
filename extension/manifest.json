@@ -1,0 +1,24 @@
+{
+  "manifest_version": 3,
+  "name": "Simple Spelling",
+  "version": "0.1.0",
+  "description": "Rewrites web pages in simplified, casual English spelling. Choose how far to go with a slider.",
+  "permissions": ["storage"],
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "Simple Spelling"
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["respell.js", "content.js"],
+      "run_at": "document_idle"
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": ["respellings.json"],
+      "matches": ["<all_urls>"]
+    }
+  ]
+}
