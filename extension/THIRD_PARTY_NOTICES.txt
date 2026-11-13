@@ -1,9 +1,9 @@
 Simple Spelling — third-party notices
 =====================================
 
-The word table in this extension (respellings.json) was built from the
-data sources below. They are not shipped in full; respellings.json contains
-only the words that change and how they are respelled.
+The word tables in this extension (respellings.json and phonetic.json) were
+built from the data sources below. They are not shipped in full; the tables
+contain only the words that change and how they are respelled.
 
 
 1. Word list — FrequencyWords (English, 2018)
@@ -13,8 +13,8 @@ Copyright (c) 2016 Hermit Dave. Content licensed under the Creative Commons
 Attribution-ShareAlike 4.0 International licence (CC BY-SA 4.0):
 https://creativecommons.org/licenses/by-sa/4.0/
 
-respellings.json selects its words from this list, so respellings.json is
-an adaptation of it and is itself licensed under CC BY-SA 4.0.
+respellings.json and phonetic.json select their words from this list, so
+they are adaptations of it and are themselves licensed under CC BY-SA 4.0.
 
 
 2. American pronunciations — CMU Pronouncing Dictionary
