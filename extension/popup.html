@@ -3,25 +3,41 @@
 <head>
   <meta charset="utf-8">
   <style>
-    body { font: 13px/1.4 system-ui, sans-serif; width: 360px; margin: 12px; }
-    .top { display: flex; align-items: center; justify-content: space-between; }
-    h1 { font-size: 15px; margin: 0; }
-    .toggle { display: flex; align-items: center; gap: 8px; cursor: pointer; font-weight: 600; }
-    .toggle input { width: 18px; height: 18px; margin: 0; cursor: pointer; }
-    h2 { font-size: 12px; font-weight: 600; color: #555; margin: 12px 0 4px; }
+    body { font: 13px/1.4 system-ui, sans-serif; width: 380px; margin: 12px; }
+    h1 { font-size: 15px; margin: 0 0 8px; }
+    .modes { display: flex; gap: 4px; }
+    .modes label { flex: 1; text-align: center; border: 1px solid #ccc; border-radius: 6px;
+      padding: 5px 4px; cursor: pointer; }
+    .modes input { display: none; }
+    .modes label:has(input:checked) { background: #2563eb; border-color: #2563eb; color: white; }
+    #blurb { color: #555; margin: 10px 0 4px; }
+    h2 { font-size: 12px; font-weight: 600; color: #555; margin: 10px 0 4px; }
     ol { padding-left: 22px; margin: 0; }
     li { margin: 3px 0; }
-    li .ex { display: block; font-size: 11px; color: #777; }
-    body.off li { color: #999; }
+    .ex { display: block; font-size: 11px; color: #777; }
+    table { border-collapse: collapse; width: 100%; }
+    td { padding: 2px 4px; vertical-align: top; }
+    td.sp { font-weight: 600; white-space: nowrap; }
+    td.ex { font-size: 11px; color: #777; }
+    [hidden] { display: none; }
   </style>
 </head>
 <body>
-  <div class="top">
-    <h1>Simple Spelling</h1>
-    <label class="toggle"><span id="state">Off</span><input id="on" type="checkbox"></label>
+  <h1>Simple Spelling</h1>
+  <div class="modes">
+    <label><input type="radio" name="mode" value="off">Off</label>
+    <label><input type="radio" name="mode" value="simple">Simple fixes</label>
+    <label><input type="radio" name="mode" value="phonetic">Fully phonetic</label>
   </div>
-  <h2>Spelling rules it applies</h2>
-  <ol id="rules"></ol>
+  <div id="blurb"></div>
+  <section id="simple" hidden>
+    <h2>Spelling rules it applies</h2>
+    <ol id="rules"></ol>
+  </section>
+  <section id="phonetic" hidden>
+    <h2>Each sound has one spelling</h2>
+    <table id="key"></table>
+  </section>
   <script src="popup.js"></script>
 </body>
 </html>

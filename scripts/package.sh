@@ -13,6 +13,7 @@ files=(
   popup.html
   popup.js
   respellings.json
+  phonetic.json
   THIRD_PARTY_NOTICES.txt
   icons/icon16.png
   icons/icon32.png

@@ -7,7 +7,8 @@
   anywhere.
 - **No accounts, analytics, tracking or ads.** The extension makes no network
   requests. Its word list is bundled with it.
-- **The only thing stored is the on/off switch.** It's saved with
+- **The only thing stored is which mode you picked** (off, simple fixes or
+  fully phonetic). It's saved with
   `chrome.storage.sync`, so if you're signed in to Chrome it follows you to
   your other devices, like any Chrome setting.
 
