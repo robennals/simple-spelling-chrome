@@ -1,10 +1,16 @@
 # simple-spelling-chrome
 
-Chrome extension that rewrites web pages in simplified, casual English
-spelling (*tho, thru, nite, luv, hed, skool*). The toolbar popup has one
-on/off switch and lists the spelling rules it applies.
+Chrome extension that rewrites web pages in simpler English spelling. The
+toolbar popup has three modes:
 
-- **Rules:** [docs/spelling-rules.md](docs/spelling-rules.md)
+- **Simple fixes:** fixes the most confusing spellings with familiar casual
+  ones (*tho, thru, nite, luv, hed, skool*).
+- **Fully phonetic:** every sound has one spelling, keeping British and
+  American vowel differences (*Iy thawt wee shood goh owt taniyt*).
+- **Off.**
+
+- **Simple-fixes rules:** [docs/spelling-rules.md](docs/spelling-rules.md)
+- **Fully phonetic key:** [docs/phonetic-mode.md](docs/phonetic-mode.md)
 - **Per-level numbers and samples:** [docs/analysis/levels.md](docs/analysis/levels.md)
 - **Privacy:** collects no data — [docs/privacy.md](docs/privacy.md)
 - **Publishing:** [docs/publishing.md](docs/publishing.md)
@@ -13,8 +19,9 @@ on/off switch and lists the spelling rules it applies.
 
 1. Open `chrome://extensions` and turn on **Developer mode**.
 2. Click **Load unpacked** and choose the `extension/` folder.
-3. Click the Simple Spelling toolbar icon and switch it **On**. The page
-   updates straight away; switching **Off** restores the original text.
+3. Click the Simple Spelling toolbar icon and pick **Simple fixes** or
+   **Fully phonetic**. The page updates straight away; **Off** restores the
+   original text.
 
 ## Develop
 
@@ -29,9 +36,9 @@ scripts/package.sh                   # build dist/simple-spelling-<version>.zip
 
 ## Credits
 
-The word table (`extension/respellings.json`) is built from
+The word tables (`extension/respellings.json`, `extension/phonetic.json`) are built from
 [FrequencyWords](https://github.com/hermitdave/FrequencyWords) (CC BY-SA 4.0),
 the [CMU Pronouncing Dictionary](https://github.com/cmusphinx/cmudict) and
 [ipa-dict](https://github.com/open-dict-data/ipa-dict). Because the word list
-is CC BY-SA 4.0, `respellings.json` is too. Full notices are in
+is CC BY-SA 4.0, so are both tables. Full notices are in
 [extension/THIRD_PARTY_NOTICES.txt](extension/THIRD_PARTY_NOTICES.txt).

@@ -11,6 +11,8 @@ of the host permission.
 
 ```bash
 python3 tools/make_icons.py      # only if the icon design changes
+# regenerate extension/respellings.json and extension/phonetic.json if the
+# rules changed: see docs/spelling-rules.md and docs/phonetic-mode.md
 scripts/package.sh               # -> dist/simple-spelling-0.1.0.zip
 ```
 
@@ -27,13 +29,13 @@ store rejects a version it has already seen.
 
 - **Name:** Simple Spelling
 - **Summary:** taken from the manifest's `description`:
-  "Read the web in simpler, more phonetic English spelling: tho, thru, nite,
-  luv, hed, skool. One switch turns it on or off."
+  "Read the web in simpler English spelling: fix the most confusing
+  spellings, or go fully phonetic. tho, thru, nite, luv."
 - **Category:** Accessibility
 - **Language:** English
 - **Icon:** `extension/icons/icon128.png`
 - **Screenshots:** at least one, 1280×800 or 640×400. Suggestion: the same
-  article before and after switching on, with the popup open.
+  article in each mode, with the popup open.
 - **Description:**
 
 > English spelling is famously irregular. *Though, through, tough, cough* all
@@ -44,14 +46,18 @@ store rejects a version it has already seen.
 > *I thawt we shud go out tonite, but my frend sed she wos too tired. She has
 > sum munney, tho, and we hav enuff to buy a fone.*
 >
-> - **One switch.** Turn it on and every page is respelled; turn it off and
->   the original text comes back.
-> - **Only fixes what's actually odd.** A spelling changes only if it's
->   irregular in both American and British English. The rules are listed in
->   the popup, most confusing first: *ough*, silent letters, *ea* in *head*,
->   *o* in *love*, *igh*, *ph*, and more.
-> - **Stays readable.** It never turns a word into a different word, leaves
->   names alone, and doesn't touch code or text boxes.
+> - **Two modes.** *Simple fixes* corrects only the most confusing spellings
+>   with familiar casual ones. *Fully phonetic* gives every sound exactly one
+>   spelling, keeping British and American vowel differences: *Iy thawt wee
+>   shood goh owt taniyt.* Switch off and the original text comes back.
+> - **Simple fixes only changes what's actually odd.** A spelling changes
+>   only if it's irregular in both American and British English, and never
+>   into a different word. The rules are listed in the popup, most confusing
+>   first: *ough*, silent letters, *ea* in *head*, *o* in *love*, *igh*, *ph*,
+>   and more.
+> - **Respects your accent.** Fully phonetic keeps British and American
+>   vowels apart (*bahth*, *faadher*, *thawt*) and never drops an *r* or *t*.
+> - **Leaves names, code and text boxes alone.**
 > - **Private.** Everything happens in your browser. No data is collected or
 >   sent anywhere.
 >
@@ -62,8 +68,8 @@ store rejects a version it has already seen.
 
 - **Single purpose:** "Displays the text of web pages in a simplified,
   more phonetic English spelling."
-- **Permission justification, `storage`:** "Remembers whether the user has
-  switched respelling on or off."
+- **Permission justification, `storage`:** "Remembers which mode the user
+  picked (off, simple fixes, or fully phonetic)."
 - **Host permission justification (content script on all URLs):** "The
   extension respells the text of whatever page the user is reading, so it
   has to run on any site. It only changes how text is displayed and sends

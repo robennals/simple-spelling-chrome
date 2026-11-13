@@ -3,9 +3,10 @@
 **Summary.** Spelling fixes come as a sequence of **levels**. Each level is
 one rule that turns a class of confusing spellings into a familiar, casual
 spelling of the kind kids and texters already use: *tho, thru, nite, luv, hed,
-skool, fone*. The extension has a single on/off switch that applies every
-level, plus the very common words. Levels are listed with the most confusing
-spellings first.
+skool, fone*. This is the extension's *Simple fixes* mode, which applies
+every level plus the very common words; the other mode is
+[Fully phonetic](phonetic-mode.md). Levels are listed with the most
+confusing spellings first.
 
 > I thawt we shud go out tonite, but my frend sed she wos too tired to leave
 > the house. Maybe we cud meet anuther time wen the wether is nice and
