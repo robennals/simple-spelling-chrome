@@ -19,6 +19,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from phonetic_spelling import VOWELS, load_cmudict, load_freq, load_ipa_uk, to_units  # noqa: E402
+import spelling_levels  # noqa: E402
 
 CONSONANTS = {
     # th spells both th sounds (thin, this), as in normal spelling
@@ -149,6 +150,16 @@ KEY = [
 ]
 
 
+def is_abbreviation(word, prons):
+    """CMUdict lists abbreviations under their spoken form (st = "street",
+    mr = "mister", fbi = "eff bee eye"). Spot them so they're left alone:
+    no vowel letter at all, or a short word whose letters can't be matched to
+    any of its pronunciations."""
+    if not set(word) & set("aeiouy"):
+        return True
+    return len(word) <= 4 and not any(spelling_levels.align(word, p) for p in prons)
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("cmudict")
@@ -162,6 +173,8 @@ def main():
     ranked = [w for w, _ in load_freq(a.freq) if w.isalpha() and w.isascii()]
     # single letters are letter names ("t" = "tee"), except the words a and I
     words = [w for w in ranked if w in us and (len(w) > 1 or w in ("a", "i"))][:a.top]
+    words = [w for w in words
+             if not is_abbreviation(w, spelling_levels.pronunciations(w, us, uk))]
     # Contractions aren't in the word list but CMUdict has them (can't, I'm).
     # The British dictionary doesn't, so these use the American pronunciation.
     common = set(ranked[:5000])

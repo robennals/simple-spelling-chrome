@@ -47,5 +47,17 @@ class VowelSetTest(unittest.TestCase):
         self.assertEqual(spell("K AE1 N T"), "kant")
 
 
+class AbbreviationTest(unittest.TestCase):
+    def test_abbreviations_are_spotted(self):
+        street = [("S", "T", "R", "IY")]
+        self.assertTrue(pm.is_abbreviation("st", street))
+        self.assertTrue(pm.is_abbreviation("fbi", [("EH", "F", "B", "IY", "AY")]))
+
+    def test_real_words_are_not(self):
+        self.assertFalse(pm.is_abbreviation("cat", [("K", "AE", "T")]))
+        # irregular but a real word: longer than 4 letters, so still respelled
+        self.assertFalse(pm.is_abbreviation("colonel", [("K", "ER", "N", "AX", "L")]))
+
+
 if __name__ == "__main__":
     unittest.main()

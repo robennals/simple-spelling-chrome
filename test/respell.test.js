@@ -93,3 +93,10 @@ test("I stays capitalised mid-sentence and contractions are looked up whole", ()
   assert.strictEqual(respellText("so I can't go", PHONETIC, false), "soh Iy kant goh");
   assert.strictEqual(respellText("so I can’t go", PHONETIC, false), "soh Iy kant goh");
 });
+
+test("abbreviations are left alone in both modes", () => {
+  const s = "St Paul met Mr Smith and Dr Jones from the FBI, etc.";
+  assert.strictEqual(respellText(s, SIMPLE, true), s);
+  assert.strictEqual(respellText("st Paul, mr Smith, dr Jones, the fbi, etc.", PHONETIC, true),
+    "st Paul, mr Smith, dr Jones, tha fbi, etc.");
+});
