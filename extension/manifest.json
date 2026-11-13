@@ -2,23 +2,46 @@
   "manifest_version": 3,
   "name": "Simple Spelling",
   "version": "0.1.0",
-  "description": "Rewrites web pages in simplified, casual English spelling. Choose how far to go with a slider.",
-  "permissions": ["storage"],
+  "description": "Read the web in simpler English spelling: fix the most confusing spellings, or go fully phonetic. tho, thru, nite, luv.",
+  "minimum_chrome_version": "93",
+  "permissions": [
+    "storage"
+  ],
+  "icons": {
+    "16": "icons/icon16.png",
+    "32": "icons/icon32.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
   "action": {
     "default_popup": "popup.html",
-    "default_title": "Simple Spelling"
+    "default_title": "Simple Spelling",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "32": "icons/icon32.png"
+    }
   },
   "content_scripts": [
     {
-      "matches": ["<all_urls>"],
-      "js": ["respell.js", "content.js"],
+      "matches": [
+        "<all_urls>"
+      ],
+      "js": [
+        "respell.js",
+        "content.js"
+      ],
       "run_at": "document_idle"
     }
   ],
   "web_accessible_resources": [
     {
-      "resources": ["respellings.json"],
-      "matches": ["<all_urls>"]
+      "resources": [
+        "respellings.json",
+        "phonetic.json"
+      ],
+      "matches": [
+        "<all_urls>"
+      ]
     }
   ]
 }

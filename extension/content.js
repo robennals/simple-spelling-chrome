@@ -1,22 +1,24 @@
-// When switched on, rewrites the page's text with every spelling rule (and the
-// very common words). Original text is kept so switching off restores it.
+// Rewrites the page's text in the chosen mode ("simple" fixes or fully
+// "phonetic"), and re-renders when the mode changes. Original text is kept so
+// switching off restores it.
 (() => {
   "use strict";
-  const { respellText } = self.SimpleSpelling;
+  const { respellText, simpleLookup, phoneticLookup } = self.SimpleSpelling;
 
   const SKIP = "script, style, noscript, textarea, input, select, code, pre, kbd, samp, [contenteditable=''], [contenteditable='true']";
+  const TABLES = { simple: "respellings.json", phonetic: "phonetic.json" };
+  const MAKE_LOOKUP = { simple: simpleLookup, phonetic: phoneticLookup };
   const original = new WeakMap();   // text node -> its original text
   const written = new WeakMap();    // text node -> the text we last wrote
-  let table = null;
-  let on = false;
-  let allLevels = new Set();        // every level number, once the table loads
+  const lookups = {};               // mode -> lookup function, loaded on first use
+  let mode = "off";
 
   function skipped(node) {
     const el = node.parentElement;
     return !el || el.closest(SKIP) !== null;
   }
 
-  function sentenceStartFor(node, prevText) {
+  function sentenceStartFor(prevText) {
     // A text node starts a sentence if nothing precedes it in its block or
     // the preceding text ends a sentence.
     if (prevText === null) return true;
@@ -29,15 +31,14 @@
     }
     if (!original.has(node)) original.set(node, node.nodeValue);
     const src = original.get(node);
-    const out = on ? respellText(table, src, allLevels, sentenceStartFor(node, prevText), true)
-      : src;
+    const lookup = lookups[mode];
+    const out = lookup ? respellText(src, lookup, sentenceStartFor(prevText)) : src;
     if (node.nodeValue !== out) node.nodeValue = out;
     written.set(node, out);
     return src;
   }
 
   function renderTree(root) {
-    if (!table) return;
     const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, {
       acceptNode: (n) => (skipped(n) || !/[A-Za-z]/.test(n.nodeValue)
         ? NodeFilter.FILTER_REJECT : NodeFilter.FILTER_ACCEPT),
@@ -70,21 +71,23 @@
     }
   });
 
-  async function start() {
-    const res = await fetch(chrome.runtime.getURL("respellings.json"));
-    table = await res.json();
-    allLevels = new Set(table.levels.map((_, i) => i + 1));
-    on = (await chrome.storage.sync.get({ on: false })).on;
+  async function setMode(next) {
+    if (TABLES[next] && !lookups[next]) {
+      const res = await fetch(chrome.runtime.getURL(TABLES[next]));
+      lookups[next] = MAKE_LOOKUP[next](await res.json());
+    }
+    mode = next;
     renderTree(document.body);
-    observer.observe(document.body, { childList: true, subtree: true, characterData: true });
   }
 
   chrome.storage.onChanged.addListener((changes) => {
-    if (changes.on) {
-      on = changes.on.newValue;
-      renderTree(document.body);
-    }
+    if (changes.mode) setMode(changes.mode.newValue || "off");
   });
 
-  start();
+  (async () => {
+    // Older versions stored a single on/off switch.
+    const stored = await chrome.storage.sync.get({ mode: null, on: false });
+    await setMode(stored.mode || (stored.on ? "simple" : "off"));
+    observer.observe(document.body, { childList: true, subtree: true, characterData: true });
+  })();
 })();
