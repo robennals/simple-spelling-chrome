@@ -20,7 +20,7 @@ class VowelSetTest(unittest.TestCase):
         self.assertEqual(spell("K AE1 T", "K AE1 T"), "kat")
 
     def test_palm_lot_cloth_thought(self):
-        self.assertEqual(spell("F AA1 DH ER0", "F PALM1 DH ER0"), "faadher")
+        self.assertEqual(spell("F AA1 DH ER0", "F PALM1 DH ER0"), "faather")
         self.assertEqual(spell("HH AA1 T", "HH AA1 T"), "hot")
         self.assertEqual(spell("D AO1 G", "D AA1 G"), "dog")      # cloth merges with lot
         self.assertEqual(spell("TH AO1 T", "TH AO1 T"), "thawt")
@@ -39,7 +39,7 @@ class VowelSetTest(unittest.TestCase):
         self.assertEqual(spell("HH AE1 P IY0", "HH AE1 P IY0"), "hapy")
 
     def test_consonants(self):
-        self.assertEqual(spell("DH IH1 S"), "dhis")
+        self.assertEqual(spell("DH IH1 S"), "this")             # th for both th sounds
         self.assertEqual(spell("TH IH1 NG K"), "thingk")
         self.assertEqual(spell("B AA1 K S", "B AA1 K S"), "boks")
 

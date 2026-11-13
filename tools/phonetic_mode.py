@@ -21,7 +21,8 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 from phonetic_spelling import VOWELS, load_cmudict, load_freq, load_ipa_uk, to_units  # noqa: E402
 
 CONSONANTS = {
-    "B": "b", "CH": "ch", "D": "d", "DH": "dh", "F": "f", "G": "g", "HH": "h",
+    # th spells both th sounds (thin, this), as in normal spelling
+    "B": "b", "CH": "ch", "D": "d", "DH": "th", "F": "f", "G": "g", "HH": "h",
     "JH": "j", "K": "k", "L": "l", "M": "m", "N": "n", "NG": "ng", "P": "p",
     "R": "r", "S": "s", "SH": "sh", "T": "t", "TH": "th", "V": "v", "W": "w",
     "Y": "y", "Z": "z", "ZH": "zh",
@@ -143,7 +144,7 @@ KEY = [
     ("happy", "y", ["happy", "city"]),
     ("k", "k", ["cat", "quick"]), ("ks", "ks", ["box"]), ("z", "z", ["is", "please"]),
     ("f", "f", ["phone", "laugh"]), ("j", "j", ["judge", "general"]),
-    ("th (thin)", "th", ["thin", "think"]), ("th (this)", "dh", ["this", "the"]),
+    ("th (thin, this)", "th", ["think", "this"]),
     ("zh", "zh", ["measure", "vision"]), ("w", "w", ["when", "what"]),
 ]
 

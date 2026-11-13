@@ -82,7 +82,7 @@ test("fully phonetic respells every word by sound", () => {
 test("fully phonetic keeps British/American vowel differences apart", () => {
   const ph = (w) => PHONETIC(w) ?? w;           // unchanged words aren't stored
   assert.strictEqual(ph("bath"), "bahth");     // British "ah", American "a"
-  assert.strictEqual(ph("father"), "faadher"); // palm
+  assert.strictEqual(ph("father"), "faather"); // palm
   assert.strictEqual(ph("hot"), "hot");        // lot
   assert.strictEqual(ph("thought"), "thawt");  // thought
   assert.strictEqual(ph("car"), "kaar");       // r is kept

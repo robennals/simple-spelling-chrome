@@ -56,7 +56,7 @@ store rejects a version it has already seen.
 >   first: *ough*, silent letters, *ea* in *head*, *o* in *love*, *igh*, *ph*,
 >   and more.
 > - **Respects your accent.** Fully phonetic keeps British and American
->   vowels apart (*bahth*, *faadher*, *thawt*) and never drops an *r* or *t*.
+>   vowels apart (*bahth*, *faather*, *thawt*) and never drops an *r* or *t*.
 > - **Leaves names, code and text boxes alone.**
 > - **Private.** Everything happens in your browser. No data is collected or
 >   sent anywhere.
